@@ -1,3 +1,4 @@
+
 ![enter image description here](https://www.okta.com/sites/default/files/styles/1640w_scaled/public/media/image/2021-03/how-ldap-works.png?itok=KPHB6M5H)
 
 # **Job 1: Understanding and Preparing LDAP**
@@ -90,17 +91,17 @@ ou: groups
 
 dn: cn=user,ou=groups,dc=samuel,dc=com
 objectClass: posixGroup
-cn: user
+cn: Basique
 gidNumber: 1001
 
 dn: cn=developer,ou=groups,dc=samuel,dc=com
 objectClass: posixGroup
-cn: developer
+cn: Developpeur
 gidNumber: 1002
 
 dn: cn=administrator,ou=groups,dc=samuel,dc=com
 objectClass: posixGroup
-cn: administrator
+cn: Administrateur
 gidNumber: 1003
 
 ```
@@ -135,6 +136,36 @@ displayName: Alice
 uidNumber: 1001
 gidNumber: 1001
 homeDirectory: /home/alice
+loginShell: /bin/bash
+userPassword: {SSHA}hashedpassword
+
+dn: uid=bob,ou=users,dc=samuel,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: bob
+sn: Bob
+givenName: Bob
+cn: Bob
+displayName: Bob
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/bob
+loginShell: /bin/bash
+userPassword: {SSHA}hashedpassword
+
+dn: uid=claire,ou=users,dc=samuel,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: claire
+sn: Claire
+givenName: Claire
+cn: Claire
+displayName: Claire
+uidNumber: 1003
+gidNumber: 1003
+homeDirectory: /home/claire
 loginShell: /bin/bash
 userPassword: {SSHA}hashedpassword
 
@@ -211,24 +242,38 @@ dn:uid=alice,ou=users,dc=samuel,dc=com
     
 3.  **Create a password policy**
     
-    I create a `ppolicy_config.ldif` file and configure the password policy:
-    
-    ```ldif
+    I create a `ppolicy.ldif` file and configure the password policy:
+    ```bash
     dn: cn=default,ou=policies,dc=samuel,dc=com
-    objectClass: pwdPolicy
+    objectClass: person
+    objectClass: top
     cn: default
+    sn: default
+    # Attribut qui contient le mot de passe : userPassword
+    pwdAttribute: userPassword
+    # Longueur minimale du mot de passe : 8 caractères
     pwdMinLength: 8
+    # Nombre d’anciens mots de passe stockés pour éviter la réutilisation : 5
+    pwdInHistory: 5
+    pwdCheckQuality: 1
+    # Nombre maximum de tentatives de connexion ratées : 3
     pwdMaxFailure: 3
+    # Verrouille le compte si 3 tentatives de connexion consécutives ont échoué
     pwdLockout: TRUE
     pwdLockoutDuration: 300
+    pwdFailureCountInterval: 300
     pwdMustChange: TRUE
-    
+    # Permet à l’utilisateur de modifier lui-même son mot de passe
+    pwdAllowUserChange: TRUE
+    pwdExpireWarning: 604800
+    pwdGraceAuthNLimit: 5
+    pwdSafeModify: FALSE
     ```
-    
+        
     I apply the policy with:
     
     ```bash
-    sudo ldapadd -x -D "cn=admin,dc=samuel,dc=com" -W -f ppolicy_config.ldif
+    sudo ldapadd -x -D "cn=admin,dc=samuel,dc=com" -W -f ppolicy.ldif
     
     ```
     
