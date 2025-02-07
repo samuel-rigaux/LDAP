@@ -249,21 +249,21 @@ dn:uid=alice,ou=users,dc=samuel,dc=com
     objectClass: top
     cn: default
     sn: default
-    # Attribut qui contient le mot de passe : userPassword
+    # Attribute that contains the password: userPassword
     pwdAttribute: userPassword
-    # Longueur minimale du mot de passe : 8 caractères
+    # Minimum password length: 8 characters
     pwdMinLength: 8
-    # Nombre d’anciens mots de passe stockés pour éviter la réutilisation : 5
+    # Number of previous passwords stored to prevent reuse: 5
     pwdInHistory: 5
     pwdCheckQuality: 1
-    # Nombre maximum de tentatives de connexion ratées : 3
+    # Maximum number of failed login attempts: 3
     pwdMaxFailure: 3
-    # Verrouille le compte si 3 tentatives de connexion consécutives ont échoué
+    # Locks the account if 3 consecutive login attempts fail
     pwdLockout: TRUE
     pwdLockoutDuration: 300
     pwdFailureCountInterval: 300
     pwdMustChange: TRUE
-    # Permet à l’utilisateur de modifier lui-même son mot de passe
+    # Allows the user to change their own password
     pwdAllowUserChange: TRUE
     pwdExpireWarning: 604800
     pwdGraceAuthNLimit: 5
